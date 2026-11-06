@@ -31,6 +31,11 @@ public class Deck {
         return cards.remove(cards.size() - 1); // Pops the top card
     }
 
+    public void addCard(Card card) {
+        cards.add(card);
+        card.setFaceUp(false);
+    }
+
     public int size() {
         return cards.size();
     }

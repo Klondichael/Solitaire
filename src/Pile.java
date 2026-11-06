@@ -50,6 +50,10 @@ public class Pile {
         cards.remove(cards.size()-1);
     }
 
+    public boolean isEmpty() {
+        return cards.size() == 0;
+    }
+
     @Override
     public String toString() {
         if (cards.size() == 0) {

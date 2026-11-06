@@ -9,10 +9,10 @@ import java.util.Collections;
 public class Board {
     private Deck deck;
 
-    private Pile clubs;
-    private Pile diamonds;
-    private Pile spades;
-    private Pile hearts;
+    private Foundation clubs;
+    private Foundation diamonds;
+    private Foundation spades;
+    private Foundation hearts;
 
     private Pile waste;
     private Deck stock;
@@ -25,17 +25,17 @@ public class Board {
     private Column Col6;
     private Column Col7;
 
-    private List<Pile> foundations;
+    private List<Foundation> foundations;
     private List<Column> tableau;
 
     public Board(Deck deck) {
         this.deck = deck;
 
         // the 4 piles where the finished suits go
-        clubs = new Pile("A♣");
-        diamonds = new Pile("A♦");
-        spades = new Pile("A♠");
-        hearts = new Pile("A♥");
+        clubs = new Foundation(Suit.CLUBS);
+        diamonds = new Foundation(Suit.DIAMONDS);
+        spades = new Foundation(Suit.SPADES);
+        hearts = new Foundation(Suit.HEARTS);
 
         // list of all 4 finished suit piles
         foundations = new ArrayList<>(Arrays.asList(clubs, diamonds, spades, hearts));
@@ -70,7 +70,7 @@ public class Board {
         }
 
         for (Column col : tableau) {
-            col.getCardAt(col.getLength()-1).setFaceUp(true);
+            col.getCardAtIndex(col.getLength()-1).setFaceUp(true);
         }
         
         // draw pile
@@ -85,7 +85,7 @@ public class Board {
     }
 
     public void showColumns() {
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i <= 7; i++) {
             char character = (char) ('\u2080' + i);
             System.out.print("\u001b[30m" + character + "      " + "\u001b[0m");
         }
@@ -103,7 +103,7 @@ public class Board {
                     System.out.print("      ");
                 } else {
                     // print the card that is at this row and column
-                    System.out.print(tableau.get(j).getCardAt(i));
+                    System.out.print(tableau.get(j).getCardAtIndex(i));
                 }
                 // leave a space between cards horizontally
                 System.out.print(" ");
@@ -117,11 +117,37 @@ public class Board {
         System.out.println(tableau.get(column-1));
     }
 
+    public List<Foundation> getFoundations() {
+        return foundations;
+    }
+
+    public void showFoundations() {
+        for (int i = 1; i <= 4; i++) {
+            char character = (char) ('\u2080' + i);
+            System.out.print("\u001b[30m" + character + "      " + "\u001b[0m");
+        }
+        System.out.println();
+        for (Pile foundation : foundations) {
+            System.out.print(foundation.toString() + " ");
+        }
+        System.out.println();
+    }
+
     public Column getColumnAt(int position) {
         return tableau.get(position-1);
     }
 
+    public boolean wasteIsEmpty() {
+        return waste.isEmpty();
+    }
+
     public void drawCard() {
+        if (stock.size() == 0) {
+            while (!wasteIsEmpty()) {
+                stock.addCard(waste.getTopCard());
+                waste.takeTopCard();
+            }
+        }
         waste.addCard(stock.dealCard());
     }
 

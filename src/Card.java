@@ -29,6 +29,10 @@ public class Card {
         this.faceUp = faceUp;
     }
 
+    public boolean isFaceUp() {
+        return faceUp;
+    }
+
     public String toWords() {
         return rank.name() + " of " + suit.name();
     }
